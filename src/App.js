@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useState } from "react";
 
 function App() {
+  let [backendUrl, setBackendUrl] = useState("");
+  let [userList, setUserList] = useState([]);
+
+  useEffect(() => {
+    setBackendUrl(process.env.REACT_APP_BACKEND_URL);
+  }, []);
+
+  useEffect(() => {
+    if (backendUrl === "") {
+      // do nothing
+    } else {
+      console.log(process.env.REACT_APP_BACKEND_URL);
+      setUserList("");
+      fetch(backendUrl + "/users/")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Data from /users/ is: " + JSON.stringify(data));
+        });
+    }
+  }, [backendUrl]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>User List</h1>
+      <h2>Backend URL is: {backendUrl}</h2>
+      {userList && (
+        <div>
+          {userList.map((user) => {
+            return <h1>User exists</h1>;
+          })}
+        </div>
+      )}
     </div>
   );
 }
